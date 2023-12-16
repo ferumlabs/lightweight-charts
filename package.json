@@ -1,7 +1,6 @@
 {
-  "private": true,
   "version": "4.2.0",
-  "name": "lightweight-charts",
+  "name": "@ferum-labs/lightweight-charts",
   "author": "TradingView, Inc.",
   "license": "Apache-2.0",
   "description": "Performant financial charts built with HTML5 canvas",
@@ -10,7 +9,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/tradingview/lightweight-charts.git"
+    "url": "git+https://github.com/tradingview/lightweight-charts.git"
   },
   "module": "dist/lightweight-charts.production.mjs",
   "main": "index.cjs",
@@ -132,5 +131,10 @@
     "verify": "npm-run-all clean -p build:prod check-markdown-links -p lint check-dts-docs tsc-verify test size-limit -p type-tests",
     "test": "mocha tests/unittests/**/*.spec.ts",
     "type-tests": "tsc -p ./tests/type-checks/tsconfig.composite.json --noEmit"
+  },
+  "homepage": "https://github.com/tradingview/lightweight-charts#readme",
+  "directories": {
+    "lib": "lib",
+    "test": "tests"
   }
 }

@@ -14,7 +14,7 @@ import { drawArrow, hitTestArrow } from './series-markers-arrow';
 import { drawCircle, hitTestCircle } from './series-markers-circle';
 import { drawLine, hitTestLine } from './series-markers-line';
 import { drawSquare, hitTestSquare } from './series-markers-square';
-import { drawText, hitTestText } from './series-markers-text';
+import { drawText } from './series-markers-text';
 
 export interface SeriesMarkerText {
 	content: string;
@@ -146,10 +146,6 @@ function drawShape(item: SeriesMarkerRendererDataItem, ctx: CanvasRenderingConte
 }
 
 function hitTestItem(item: SeriesMarkerRendererDataItem, x: Coordinate, y: Coordinate): boolean {
-	if (item.text !== undefined && hitTestText(item.text.x, item.text.y, item.text.width, item.text.height, x, y)) {
-		return true;
-	}
-
 	return hitTestShape(item, x, y);
 }
 

@@ -3,6 +3,9 @@ import { SeriesMarkerRendererDataItem } from './series-markers-renderer';
 
 const cellWidth = 72;
 const cellHeight = 24;
+const badgeOffset = 20;
+const cellHalfWidth = cellWidth/2;
+const cellHalfHeight = cellHeight/2;
 
 function drawPill(
 	ctx: CanvasRenderingContext2D,
@@ -43,18 +46,20 @@ export function drawLine(
     const isHovered = hitId === item.internalId;
     const somethingElseHovered = hitId !== undefined && !isHovered;
 
-    const primaryColor = somethingElseHovered ? 'rgba(44, 49, 48, 0.5)' : '#A992E3';
+    const primaryColor = somethingElseHovered ? 'rgba(169, 146, 227, 0.2)' : '#A992E3';
     const centerX = item.x
     const centerY = item.y
 
-    const cellCenterY = centerY - 20;
+    const cellCenterY = centerY - badgeOffset;
 
+    // Size is an argument being used to specify the percentage of remaining time in the trade.
+    // When this percentage ticks to 0, this library provides a default of 10 so we check that.
     const active = item.size > 0 && item.size < 10;
     
     ctx.save();
     drawPill(ctx, centerX - cellWidth/2, cellCenterY - cellHeight/2, cellWidth, cellHeight, 8, somethingElseHovered);
     
-    ctx.fillStyle = somethingElseHovered ? 'rgba(97, 97, 97, 0.05)'  : '#181B1A';
+    ctx.fillStyle = somethingElseHovered ? 'rgba(24, 27, 26, 0.2)'  : '#181B1A';
 	ctx.fillRect(centerX - cellWidth/2, cellCenterY - cellHeight/2, cellWidth, cellHeight);
     if (active) {
         ctx.fillStyle = primaryColor;
@@ -78,11 +83,8 @@ export function hitTestLine(
 	x: Coordinate,
 	y: Coordinate
 ): boolean {
-    const cellHalfWidth = 32;
-    const cellHalfHeight = 8;
-
 	const left = centerX - cellHalfWidth;
-	const top = centerY - cellHalfHeight - 16;
+	const top = centerY - cellHalfHeight - badgeOffset;
     const right = left + cellWidth;
     const bottom = top + cellHeight;
 
