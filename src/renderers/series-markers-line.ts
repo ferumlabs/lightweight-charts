@@ -46,7 +46,7 @@ export function drawLine(
     const isHovered = hitId === item.internalId;
     const somethingElseHovered = hitId !== undefined && !isHovered;
 
-    const primaryColor = somethingElseHovered ? 'rgba(169, 146, 227, 0.2)' : '#A992E3';
+    const primaryColor = somethingElseHovered ? 'rgba(169, 146, 227, 0.4)' : '#A992E3';
     const centerX = item.x
     const centerY = item.y
 
@@ -59,7 +59,7 @@ export function drawLine(
     ctx.save();
     drawPill(ctx, centerX - cellWidth/2, cellCenterY - cellHeight/2, cellWidth, cellHeight, 8, somethingElseHovered);
     
-    ctx.fillStyle = somethingElseHovered ? 'rgba(24, 27, 26, 0.2)'  : '#181B1A';
+    ctx.fillStyle = somethingElseHovered ? 'rgba(24, 27, 26, 0.4)'  : '#181B1A';
 	ctx.fillRect(centerX - cellWidth/2, cellCenterY - cellHeight/2, cellWidth, cellHeight);
     if (active) {
         ctx.fillStyle = primaryColor;
