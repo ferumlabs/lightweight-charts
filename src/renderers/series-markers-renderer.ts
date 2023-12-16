@@ -3,7 +3,7 @@ import { MediaCoordinatesRenderingScope } from 'fancy-canvas';
 import { ensureNever } from '../helpers/assertions';
 import { makeFont } from '../helpers/make-font';
 
-import { HoveredObject } from '../model/chart-model';
+import { HoveredObject, HoveredSource } from '../model/chart-model';
 import { Coordinate } from '../model/coordinate';
 import { SeriesMarkerShape } from '../model/series-markers';
 import { TextWidthCache } from '../model/text-width-cache';
@@ -12,6 +12,7 @@ import { SeriesItemsIndexesRange, TimedValue } from '../model/time-data';
 import { MediaCoordinatesPaneRenderer } from './media-coordinates-pane-renderer';
 import { drawArrow, hitTestArrow } from './series-markers-arrow';
 import { drawCircle, hitTestCircle } from './series-markers-circle';
+import { drawLine, hitTestLine } from './series-markers-line';
 import { drawSquare, hitTestSquare } from './series-markers-square';
 import { drawText, hitTestText } from './series-markers-text';
 
@@ -31,11 +32,13 @@ export interface SeriesMarkerRendererDataItem extends TimedValue {
 	internalId: number;
 	externalId?: string;
 	text?: SeriesMarkerText;
+	endCoord?: number;
 }
 
 export interface SeriesMarkerRendererData {
 	items: SeriesMarkerRendererDataItem[];
 	visibleRange: SeriesItemsIndexesRange | null;
+	hoveredSource: HoveredSource | null;
 }
 
 export class SeriesMarkersRenderer extends MediaCoordinatesPaneRenderer {
@@ -84,6 +87,14 @@ export class SeriesMarkersRenderer extends MediaCoordinatesPaneRenderer {
 		ctx.textBaseline = 'middle';
 		ctx.font = this._font;
 
+		ctx.fillStyle = '#ece028';
+		for (let i = this._data.visibleRange.from; i < this._data.visibleRange.to; i++) {
+			const item = this._data.items[i];
+			ctx.beginPath();
+			ctx.arc(item.x, item.y, 3, 0, 2 * Math.PI, false);
+			ctx.fill();
+		}
+
 		for (let i = this._data.visibleRange.from; i < this._data.visibleRange.to; i++) {
 			const item = this._data.items[i];
 			if (item.text !== undefined) {
@@ -91,22 +102,23 @@ export class SeriesMarkersRenderer extends MediaCoordinatesPaneRenderer {
 				item.text.height = this._fontSize;
 				item.text.x = item.x - item.text.width / 2 as Coordinate;
 			}
-			drawItem(item, ctx);
+			const hitId = hitTestData;
+			drawItem(item, ctx, typeof hitId === 'number' ? hitId : undefined);
 		}
 	}
 }
 
-function drawItem(item: SeriesMarkerRendererDataItem, ctx: CanvasRenderingContext2D): void {
+function drawItem(item: SeriesMarkerRendererDataItem, ctx: CanvasRenderingContext2D, hitId?: number): void {
 	ctx.fillStyle = item.color;
 
-	if (item.text !== undefined) {
+	if (item.text !== undefined && item.shape !== 'line') {
 		drawText(ctx, item.text.content, item.text.x, item.text.y);
 	}
 
-	drawShape(item, ctx);
+	drawShape(item, ctx, hitId);
 }
 
-function drawShape(item: SeriesMarkerRendererDataItem, ctx: CanvasRenderingContext2D): void {
+function drawShape(item: SeriesMarkerRendererDataItem, ctx: CanvasRenderingContext2D, hitId?: number): void {
 	if (item.size === 0) {
 		return;
 	}
@@ -124,6 +136,10 @@ function drawShape(item: SeriesMarkerRendererDataItem, ctx: CanvasRenderingConte
 		case 'square':
 			drawSquare(ctx, item.x, item.y, item.size);
 			return;
+		case 'line': {
+			drawLine(ctx, item, hitId);
+			return;
+		}
 	}
 
 	ensureNever(item.shape);
@@ -151,5 +167,7 @@ function hitTestShape(item: SeriesMarkerRendererDataItem, x: Coordinate, y: Coor
 			return hitTestCircle(item.x, item.y, item.size, x, y);
 		case 'square':
 			return hitTestSquare(item.x, item.y, item.size, x, y);
+		case 'line':
+			return hitTestLine(item.x, item.y, item.size, x, y);
 	}
 }

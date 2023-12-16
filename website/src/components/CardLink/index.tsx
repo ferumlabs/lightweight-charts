@@ -16,7 +16,8 @@ function CardContainer({
 			href={href}
 			className={clsx('card padding--lg', styles.cardContainer)}
 		>
-			{children}
+			{/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+			{children as any}
 		</Link>
 	);
 }

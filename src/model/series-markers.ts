@@ -6,7 +6,7 @@ export type SeriesMarkerPosition = 'aboveBar' | 'belowBar' | 'inBar';
 /**
  * Represents the shape of a series marker.
  */
-export type SeriesMarkerShape = 'circle' | 'square' | 'arrowUp' | 'arrowDown';
+export type SeriesMarkerShape = 'circle' | 'square' | 'arrowUp' | 'arrowDown' | 'line';
 
 /**
  * Represents a series marker.
@@ -47,6 +47,8 @@ export interface SeriesMarker<TimeType> {
 	 * @internal
 	 */
 	originalTime: unknown;
+
+	endCoord?: number;
 }
 
 export interface InternalSeriesMarker<TimeType> extends SeriesMarker<TimeType> {

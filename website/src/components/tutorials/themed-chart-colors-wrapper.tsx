@@ -1,5 +1,5 @@
 import { useColorMode } from '@docusaurus/theme-common';
-import React, { useEffect, useState } from 'react';
+import React, { ReactComponentElement, useEffect, useState } from 'react';
 
 import { themeColors } from '../../../theme-colors';
 
@@ -12,7 +12,8 @@ export interface ThemedChartColors {
 }
 
 export interface ThemedChartProps {
-	ChartComponent: React.ComponentType<{ colors: ThemedChartColors }>;
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	ChartComponent: any;
 }
 
 function getThemeColors(isDarkTheme: boolean): ThemedChartColors {

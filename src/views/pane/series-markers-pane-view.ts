@@ -53,6 +53,14 @@ function fillSizeAndY(
 	const halfSize = shapeSize / 2;
 	rendererItem.size = shapeSize;
 
+	if (rendererItem.shape === 'line') {
+		rendererItem.y = priceScale.priceToCoordinate(inBarPrice, firstValue);
+		if (rendererItem.text !== undefined) {
+			rendererItem.text.y = rendererItem.y;
+		}
+		return;
+	}
+
 	switch (marker.position) {
 		case 'inBar': {
 			rendererItem.y = priceScale.priceToCoordinate(inBarPrice, firstValue);
@@ -103,6 +111,7 @@ export class SeriesMarkersPaneView implements IUpdatablePaneView {
 		this._data = {
 			items: [],
 			visibleRange: null,
+			hoveredSource: null,
 		};
 	}
 
@@ -165,8 +174,10 @@ export class SeriesMarkersPaneView implements IUpdatablePaneView {
 				internalId: marker.internalId,
 				externalId: marker.id,
 				text: undefined,
+				endCoord: marker.endCoord,
 			}));
 			this._dataInvalidated = false;
+			this._data.hoveredSource = this._model.hoveredSource();
 		}
 
 		const layoutOptions = this._model.options().layout;
