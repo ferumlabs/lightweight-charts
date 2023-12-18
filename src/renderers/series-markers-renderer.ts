@@ -12,7 +12,7 @@ import { SeriesItemsIndexesRange, TimedValue } from '../model/time-data';
 import { MediaCoordinatesPaneRenderer } from './media-coordinates-pane-renderer';
 import { drawArrow, hitTestArrow } from './series-markers-arrow';
 import { drawCircle, hitTestCircle } from './series-markers-circle';
-import { drawLine, hitTestLine } from './series-markers-line';
+import { drawPnl, hitTestPnl } from './series-markers-pnl';
 import { drawSquare, hitTestSquare } from './series-markers-square';
 import { drawText } from './series-markers-text';
 
@@ -111,7 +111,7 @@ export class SeriesMarkersRenderer extends MediaCoordinatesPaneRenderer {
 function drawItem(item: SeriesMarkerRendererDataItem, ctx: CanvasRenderingContext2D, hitId?: number): void {
 	ctx.fillStyle = item.color;
 
-	if (item.text !== undefined && item.shape !== 'line') {
+	if (item.text !== undefined && item.shape !== 'pnl') {
 		drawText(ctx, item.text.content, item.text.x, item.text.y);
 	}
 
@@ -136,8 +136,8 @@ function drawShape(item: SeriesMarkerRendererDataItem, ctx: CanvasRenderingConte
 		case 'square':
 			drawSquare(ctx, item.x, item.y, item.size);
 			return;
-		case 'line': {
-			drawLine(ctx, item, hitId);
+		case 'pnl': {
+			drawPnl(ctx, item, hitId);
 			return;
 		}
 	}
@@ -163,7 +163,7 @@ function hitTestShape(item: SeriesMarkerRendererDataItem, x: Coordinate, y: Coor
 			return hitTestCircle(item.x, item.y, item.size, x, y);
 		case 'square':
 			return hitTestSquare(item.x, item.y, item.size, x, y);
-		case 'line':
-			return hitTestLine(item.x, item.y, item.size, x, y);
+		case 'pnl':
+			return hitTestPnl(item.x, item.y, item.size, x, y);
 	}
 }

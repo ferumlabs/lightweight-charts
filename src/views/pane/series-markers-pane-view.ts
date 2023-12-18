@@ -53,7 +53,7 @@ function fillSizeAndY(
 	const halfSize = shapeSize / 2;
 	rendererItem.size = shapeSize;
 
-	if (rendererItem.shape === 'line') {
+	if (rendererItem.shape === 'pnl') {
 		rendererItem.y = priceScale.priceToCoordinate(inBarPrice, firstValue);
 		if (rendererItem.text !== undefined) {
 			rendererItem.text.y = rendererItem.y;
@@ -174,7 +174,6 @@ export class SeriesMarkersPaneView implements IUpdatablePaneView {
 				internalId: marker.internalId,
 				externalId: marker.id,
 				text: undefined,
-				endCoord: marker.endCoord,
 			}));
 			this._dataInvalidated = false;
 			this._data.hoveredSource = this._model.hoveredSource();

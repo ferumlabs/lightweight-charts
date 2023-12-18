@@ -734,7 +734,6 @@ export class Series<T extends SeriesType> extends PriceDataSource implements IDe
 				internalId: index,
 				text: marker.text,
 				size: marker.size,
-				endCoord: marker.endCoord,
 				originalTime: marker.originalTime,
 			};
 		});
