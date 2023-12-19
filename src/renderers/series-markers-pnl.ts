@@ -14,7 +14,6 @@ function drawPill(
     width: number, 
     height: number, 
     r: number,
-    hideBorder: boolean
     ): void{
     if (r > width/2) r = width/2;
     if (r > height/2) r = height/2;
@@ -30,13 +29,11 @@ function drawPill(
     ctx.lineTo(x, y + r);
     ctx.quadraticCurveTo(x, y, x + r, y);
     ctx.fillStyle = '#0E0E0F'
-    if (!hideBorder) {
-        ctx.strokeStyle = '0E0E0F'
-        ctx.lineWidth = 2;
-        ctx.moveTo(x1 - r, y);
-        ctx.lineTo(x + r, y);
-        ctx.stroke();
-    }
+    ctx.strokeStyle = '0E0E0F'
+    ctx.lineWidth = 2;
+    ctx.moveTo(x1 - r, y);
+    ctx.lineTo(x + r, y);
+    ctx.stroke();
     ctx.clip();
 }
 
@@ -45,10 +42,9 @@ export function drawPnl(
     item: SeriesMarkerRendererDataItem,
     hitId: number | undefined,
 ): void {    
-    const isHovered = hitId === item.internalId;
-    const somethingElseHovered = hitId !== undefined && !isHovered;
-    const loadingColor = somethingElseHovered ? 'rgba(44, 49, 48, 0.2)' : '#2C3130';
-    const bgColor = somethingElseHovered ? 'rgba(24, 27, 26, 0.4)'  : '#181B1A';
+    console.log(hitId);
+    const loadingColor = '#2C3130';
+    const bgColor = '#181B1A';
 
     const centerX = item.x
     const centerY = item.y
@@ -59,7 +55,7 @@ export function drawPnl(
     const active = item.size > 0 && item.size < 10;
 
     ctx.save();
-    drawPill(ctx, centerX - cellWidth/2, cellCenterY - cellHeight/2, cellWidth, cellHeight, 8, somethingElseHovered);
+    drawPill(ctx, centerX - cellWidth/2, cellCenterY - cellHeight/2, cellWidth, cellHeight, 8);
     ctx.fillStyle = bgColor
 	ctx.fillRect(centerX - cellWidth/2, cellCenterY - cellHeight/2, cellWidth, cellHeight);
     if (active) {
@@ -67,13 +63,10 @@ export function drawPnl(
         ctx.fillRect(centerX - cellWidth/2, cellCenterY - cellHeight/2, cellWidth * item.size, cellHeight);
     }
 	ctx.restore();
-
-    if (!somethingElseHovered) {
-        ctx.fillStyle = item.color
-        ctx.textAlign = "center";
-        if (item.text) {
-            ctx.fillText(item.text.content, centerX, cellCenterY);
-        }
+    ctx.fillStyle = item.color
+    ctx.textAlign = "center";
+    if (item.text) {
+        ctx.fillText(item.text.content, centerX, cellCenterY);
     }
 }
 
