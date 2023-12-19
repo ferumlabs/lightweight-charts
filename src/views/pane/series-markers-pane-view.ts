@@ -111,7 +111,6 @@ export class SeriesMarkersPaneView implements IUpdatablePaneView {
 		this._data = {
 			items: [],
 			visibleRange: null,
-			hoveredSource: null,
 		};
 	}
 
@@ -176,7 +175,6 @@ export class SeriesMarkersPaneView implements IUpdatablePaneView {
 				text: undefined,
 			}));
 			this._dataInvalidated = false;
-			this._data.hoveredSource = this._model.hoveredSource();
 		}
 
 		const layoutOptions = this._model.options().layout;

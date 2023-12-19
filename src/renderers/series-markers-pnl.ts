@@ -31,6 +31,8 @@ function drawPill(
     ctx.quadraticCurveTo(x, y, x + r, y);
     ctx.fillStyle = '#0E0E0F'
     if (!hideBorder) {
+        ctx.strokeStyle = '0E0E0F'
+        ctx.lineWidth = 2;
         ctx.moveTo(x1 - r, y);
         ctx.lineTo(x + r, y);
         ctx.stroke();
@@ -45,7 +47,7 @@ export function drawPnl(
 ): void {    
     const isHovered = hitId === item.internalId;
     const somethingElseHovered = hitId !== undefined && !isHovered;
-    const loadingColor = somethingElseHovered ? 'rgba(169, 146, 227, 0.4)' : '#A992E3';
+    const loadingColor = somethingElseHovered ? 'rgba(44, 49, 48, 0.2)' : '#2C3130';
     const bgColor = somethingElseHovered ? 'rgba(24, 27, 26, 0.4)'  : '#181B1A';
 
     const centerX = item.x
@@ -62,7 +64,7 @@ export function drawPnl(
 	ctx.fillRect(centerX - cellWidth/2, cellCenterY - cellHeight/2, cellWidth, cellHeight);
     if (active) {
         ctx.fillStyle = loadingColor;
-        ctx.fillRect(centerX - cellWidth/2, cellCenterY + 10, cellWidth * item.size, cellHeight);
+        ctx.fillRect(centerX - cellWidth/2, cellCenterY - cellHeight/2, cellWidth * item.size, cellHeight);
     }
 	ctx.restore();
 

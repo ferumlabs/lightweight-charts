@@ -3,7 +3,7 @@ import { MediaCoordinatesRenderingScope } from 'fancy-canvas';
 import { ensureNever } from '../helpers/assertions';
 import { makeFont } from '../helpers/make-font';
 
-import { HoveredObject, HoveredSource } from '../model/chart-model';
+import { HoveredObject } from '../model/chart-model';
 import { Coordinate } from '../model/coordinate';
 import { SeriesMarkerShape } from '../model/series-markers';
 import { TextWidthCache } from '../model/text-width-cache';
@@ -38,7 +38,6 @@ export interface SeriesMarkerRendererDataItem extends TimedValue {
 export interface SeriesMarkerRendererData {
 	items: SeriesMarkerRendererDataItem[];
 	visibleRange: SeriesItemsIndexesRange | null;
-	hoveredSource: HoveredSource | null;
 }
 
 export class SeriesMarkersRenderer extends MediaCoordinatesPaneRenderer {
@@ -66,7 +65,8 @@ export class SeriesMarkersRenderer extends MediaCoordinatesPaneRenderer {
 			return null;
 		}
 
-		for (let i = this._data.visibleRange.from; i < this._data.visibleRange.to; i++) {
+		// Reversed to prioritize newest markers
+		for (let i = this._data.visibleRange.to - 1; i >= this._data.visibleRange.from; i--) {
 			const item = this._data.items[i];
 			if (hitTestItem(item, x, y)) {
 				return {
