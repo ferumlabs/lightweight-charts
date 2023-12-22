@@ -14,7 +14,7 @@ import { Delegate } from '../helpers/delegate';
 import { IDestroyable } from '../helpers/idestroyable';
 import { ISubscription } from '../helpers/isubscription';
 
-import { IChartModelBase, TrackingModeExitMode } from '../model/chart-model';
+import { HoveredSource, IChartModelBase, TrackingModeExitMode } from '../model/chart-model';
 import { Coordinate } from '../model/coordinate';
 import { IDataSource } from '../model/idata-source';
 import { InvalidationLevel } from '../model/invalidate-mask';
@@ -254,7 +254,7 @@ export class PaneWidget implements IDestroyable, MouseEventHandlers {
 		const x = event.localX;
 		const y = event.localY;
 		this._setCrosshairPosition(x, y, event);
-		const hitTest = this.hitTest(x, y);
+		const hitTest = this.hitTest(x, y, this._model().hoveredSource());
 		this._chart.setCursorStyle(hitTest?.cursorStyle ?? null);
 		this._model().setHoveredSource(hitTest && { source: hitTest.source, object: hitTest.object });
 	}
@@ -386,13 +386,13 @@ export class PaneWidget implements IDestroyable, MouseEventHandlers {
 		this._endScroll(event);
 	}
 
-	public hitTest(x: Coordinate, y: Coordinate): HitTestResult | null {
+	public hitTest(x: Coordinate, y: Coordinate, hoveredSource: HoveredSource | null): HitTestResult | null {
 		const state = this._state;
 		if (state === null) {
 			return null;
 		}
 
-		return hitTestPane(state, x, y);
+		return hitTestPane(state, x, y, hoveredSource);
 	}
 
 	public setPriceAxisSize(width: number, position: PriceAxisWidgetSide): void {

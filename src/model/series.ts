@@ -24,8 +24,7 @@ import { SeriesPriceLinePaneView } from '../views/pane/series-price-line-pane-vi
 import { IPriceAxisView } from '../views/price-axis/iprice-axis-view';
 import { SeriesPriceAxisView } from '../views/price-axis/series-price-axis-view';
 import { ITimeAxisView } from '../views/time-axis/itime-axis-view';
-
-import { AutoscaleInfoImpl, AutoScaleMargins } from './autoscale-info-impl';
+import { AutoscaleInfoImpl } from './autoscale-info-impl';
 import { BarPrice, BarPrices } from './bar';
 import { IChartModelBase } from './chart-model';
 import { Coordinate } from './coordinate';
@@ -621,9 +620,6 @@ export class Series<T extends SeriesType> extends PriceDataSource implements IDe
 				);
 				range = range !== null ? range.merge(primitiveRange) : primitiveRange;
 			}
-			if (primitiveAutoscale?.margins) {
-				margins = mergeMargins(margins, primitiveAutoscale.margins);
-			}
 		});
 
 		return new AutoscaleInfoImpl(range,	margins);
@@ -787,11 +783,4 @@ export class Series<T extends SeriesType> extends PriceDataSource implements IDe
 		extractPrimitivePaneViews(this._primitives, extractor, zOrder, res);
 		return res;
 	}
-}
-
-function mergeMargins(source: AutoScaleMargins | null, additionalMargin: AutoScaleMargins): AutoScaleMargins {
-	return {
-		above: Math.max(source?.above ?? 0, additionalMargin.above),
-		below: Math.max(source?.below ?? 0, additionalMargin.below),
-	};
 }

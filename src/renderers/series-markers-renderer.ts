@@ -3,7 +3,7 @@ import { MediaCoordinatesRenderingScope } from 'fancy-canvas';
 import { ensureNever } from '../helpers/assertions';
 import { makeFont } from '../helpers/make-font';
 
-import { HoveredObject } from '../model/chart-model';
+import { HoveredObject, HoveredSource } from '../model/chart-model';
 import { Coordinate } from '../model/coordinate';
 import { SeriesMarkerShape } from '../model/series-markers';
 import { TextWidthCache } from '../model/text-width-cache';
@@ -60,14 +60,22 @@ export class SeriesMarkersRenderer extends MediaCoordinatesPaneRenderer {
 		}
 	}
 
-	public hitTest(x: Coordinate, y: Coordinate): HoveredObject | null {
+	public hitTest(x: Coordinate, y: Coordinate, hoveredSource: HoveredSource | null): HoveredObject | null {
 		if (this._data === null || this._data.visibleRange === null) {
 			return null;
 		}
 
+		const currentHit = this._data.items.find(i => i.internalId === hoveredSource?.object?.hitTestData);
+		if (currentHit && hitTestItem(currentHit, x, y)) {
+			return {
+				hitTestData: currentHit.internalId,
+				externalId: currentHit.externalId,
+			};
+		}
 		// Reversed to prioritize newest markers
 		for (let i = this._data.visibleRange.to - 1; i >= this._data.visibleRange.from; i--) {
 			const item = this._data.items[i];
+			if (item.internalId === currentHit?.internalId) continue;
 			if (hitTestItem(item, x, y)) {
 				return {
 					hitTestData: item.internalId,
@@ -87,9 +95,15 @@ export class SeriesMarkersRenderer extends MediaCoordinatesPaneRenderer {
 		ctx.textBaseline = 'middle';
 		ctx.font = this._font;
 
-		ctx.fillStyle = '#ece028';
+		// Skip the hit item to draw it last
 		for (let i = this._data.visibleRange.from; i < this._data.visibleRange.to; i++) {
 			const item = this._data.items[i];
+			if (item.internalId === hitTestData) continue
+			ctx.fillStyle = '#0E0E0F'
+			ctx.beginPath();
+			ctx.arc(item.x, item.y, 4.5, 0, 2 * Math.PI, false);
+			ctx.fill();
+			ctx.fillStyle = item.color
 			ctx.beginPath();
 			ctx.arc(item.x, item.y, 3, 0, 2 * Math.PI, false);
 			ctx.fill();
@@ -97,6 +111,7 @@ export class SeriesMarkersRenderer extends MediaCoordinatesPaneRenderer {
 
 		for (let i = this._data.visibleRange.from; i < this._data.visibleRange.to; i++) {
 			const item = this._data.items[i];
+			if (item.internalId === hitTestData) continue
 			if (item.text !== undefined) {
 				item.text.width = this._textWidthCache.measureText(ctx, item.text.content);
 				item.text.height = this._fontSize;
@@ -104,6 +119,21 @@ export class SeriesMarkersRenderer extends MediaCoordinatesPaneRenderer {
 			}
 			const hitId = hitTestData;
 			drawItem(item, ctx, typeof hitId === 'number' ? hitId : undefined);
+		}
+
+		if (hitTestData !== undefined) {
+			const item = this._data.items.find(i => i.internalId === hitTestData);
+			if (item) {
+				ctx.fillStyle = '#0E0E0F'
+				ctx.beginPath();
+				ctx.arc(item.x, item.y, 4.5, 0, 2 * Math.PI, false);
+				ctx.fill();
+				ctx.fillStyle = item.color
+				ctx.beginPath();
+				ctx.arc(item.x, item.y, 3, 0, 2 * Math.PI, false);
+				ctx.fill();
+				drawItem(item, ctx, typeof hitTestData === 'number' ? hitTestData : undefined);
+			}
 		}
 	}
 }

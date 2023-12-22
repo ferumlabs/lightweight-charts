@@ -1,8 +1,8 @@
 import { Coordinate } from '../model/coordinate';
 import { SeriesMarkerRendererDataItem } from './series-markers-renderer';
 
-const cellWidth = 72;
-const cellHeight = 24;
+const cellWidth = 96;
+const cellHeight = 28;
 const tooltipOffset = 20;
 const cellHalfWidth = cellWidth/2;
 const cellHalfHeight = cellHeight/2;
@@ -29,9 +29,8 @@ function drawPill(
     ctx.quadraticCurveTo(x, y1, x, y1 - r);
     ctx.lineTo(x, y + r);
     ctx.quadraticCurveTo(x, y, x + r, y);
-    ctx.fillStyle = '#0E0E0F'
     if (!hideBorder) {
-        ctx.strokeStyle = '0E0E0F'
+        ctx.strokeStyle = '#0E0E0F'
         ctx.lineWidth = 2;
         ctx.moveTo(x1 - r, y);
         ctx.lineTo(x + r, y);
@@ -72,6 +71,7 @@ export function drawPnl(
         ctx.fillStyle = item.color
         ctx.textAlign = "center";
         if (item.text) {
+            ctx.font = '14px "Roboto Mono"'
             ctx.fillText(item.text.content, centerX, cellCenterY);
         }
     }
@@ -89,5 +89,5 @@ export function hitTestPnl(
     const right = left + cellWidth;
     const bottom = top + cellHeight;
 
-    return x >= left && x <= right && y >= top && y <= bottom;
+    return (x >= left && x <= right && y >= top && y <= bottom) || Math.abs(centerX - x) < 8 && Math.abs(centerY - y) < 8;
 }

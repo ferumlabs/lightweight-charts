@@ -1,4 +1,4 @@
-import { HoveredObject } from '../model/chart-model';
+import { HoveredObject, HoveredSource } from '../model/chart-model';
 import { Coordinate } from '../model/coordinate';
 import { IPriceDataSource } from '../model/iprice-data-source';
 import {
@@ -82,12 +82,13 @@ function convertPrimitiveHitResult(
 function hitTestPaneView(
 	paneViews: readonly IPaneView[],
 	x: Coordinate,
-	y: Coordinate
+	y: Coordinate,
+	hoveredSource: HoveredSource | null
 ): HitTestPaneViewResult | null {
 	for (const paneView of paneViews) {
 		const renderer = paneView.renderer();
 		if (renderer !== null && renderer.hitTest) {
-			const result = renderer.hitTest(x, y);
+			const result = renderer.hitTest(x, y, hoveredSource);
 			if (result !== null) {
 				return {
 					view: paneView,
@@ -103,7 +104,8 @@ function hitTestPaneView(
 export function hitTestPane(
 	pane: Pane,
 	x: Coordinate,
-	y: Coordinate
+	y: Coordinate,
+	hoveredSource: HoveredSource | null
 ): HitTestResult | null {
 	const sources = pane.orderedSources();
 	const bestPrimitiveHit = findBestPrimitiveHitTest(sources, x, y);
@@ -118,7 +120,7 @@ export function hitTestPane(
             // therefore it takes precedence here.
 			return convertPrimitiveHitResult(bestPrimitiveHit);
 		}
-		const sourceResult = hitTestPaneView(source.paneViews(pane), x, y);
+		const sourceResult = hitTestPaneView(source.paneViews(pane), x, y, hoveredSource);
 		if (sourceResult !== null) {
 			return {
 				source: source,
